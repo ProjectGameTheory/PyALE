@@ -1,5 +1,6 @@
 from Environment import Environment
 import numpy as np
+import random
 
 class GridWorld(Environment):
     def __init__(self, size=[10,10], begin=None, goal=[0,0]):
@@ -17,7 +18,7 @@ class GridWorld(Environment):
         self.directions = np.array([[0,1], [1,0], [0,-1], [-1, 0]])
 
     def random_position(self):
-        return [np.randint(0, self.size[0]), np.randint(0, self.size[1])]
+        return [random.randint(0, self.size[0]), random.randint(0, self.size[1])]
 
     def move(self, position, direction):
         moved = np.array(position) + self.directions[direction]
