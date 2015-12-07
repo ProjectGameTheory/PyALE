@@ -1,4 +1,5 @@
 from learners.Q import Q
+from learners.ExperienceReplay import ExperienceReplay
 from policies.EGreedy import EGreedy
 from traces.Eligibility import Eligibility
 from features.Feature import Feature
@@ -24,11 +25,12 @@ writer.activate()
 e_greedy = EGreedy(epsilon=0.2)
 no_features = Feature(state_length= grid[0]*grid[1])
 trace = Eligibility(lambda_=0.0, actions=actions, shape=(no_features.num_features(), len(actions)))
-learner = Q(actions=actions, alpha=0.1, gamma=0.9, policy=e_greedy, features=no_features, trace=trace)
+q = Q(actions=actions, alpha=0.1, gamma=0.9, policy=e_greedy, features=no_features, trace=trace)
+learner = ExperienceReplay(learner=q, replays=2, max_samples=None)
 
 environment = WindyWorld(size=grid, begin=[0,3], goal=[9,3], wind=[0, 0, 1, 1, 1, 2, 2, 1, 0, 0, 0, 0])
 
-experiment = Generic(max_steps=None, episodes=5000, trials=1, learner=learner, environment=environment)
+experiment = Generic(max_steps=None, episodes=5000, trials=1, learner=q, environment=environment)
 
 #run generic experiment
 experiment.run()
