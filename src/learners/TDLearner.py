@@ -23,14 +23,14 @@ class TDLearner(Learner):
         self.base_reward = None
 
     def get_value(self, phi, action):
-        action_idx = np.where(self.actions == action)[0][0]
+        action_idx = self.idx_action(action)
         return np.dot(phi, self.theta[:, action_idx])
-        # non-sparse update
+        # sparse update
         # return np.sum(self.theta[phi,action_idx])
 
     def get_all_values(self, phi):
         return np.dot(phi, self.theta)
-        # non-sparse update
+        # sparse update
         # return np.sum(self.theta[phi,:],axis=0)
 
     def num_actions(self):
@@ -76,7 +76,7 @@ class TDLearner(Learner):
     def get_alpha(self):
         alpha = self.alpha
         if self.normalization:
-            alpha = self.normalize_alpha(alpha)
+            alpha = self.normalize_alpha(self.phi)
         return alpha
 
     def update_theta(self, alpha, reward, phi_ns):

@@ -10,6 +10,9 @@ class Learner(object):
         self.num_steps = 0
         self.tot_reward = 0
 
+    def dim_action(self):
+        return 1
+
     def start(self, state):
         self.num_steps = 0
         self.tot_reward = 0

@@ -5,7 +5,7 @@ Created on Mon Feb 23 15:19:49 2015
 @author: pvrancx
 """
 
-from Feature import Feature
+from features.Feature import Feature
 import numpy as np
 
 
