@@ -5,6 +5,7 @@ from Learner import Learner
 class RewardShaping(Learner):
 
     def __init__(self, learner=None, shaper=None):
+        super(RewardShaping, self).__init__()
         self.learner = learner
         self.shaper = shaper
 
@@ -29,4 +30,4 @@ class RewardShaping(Learner):
     def end(self, reward):
         super(RewardShaping, self).end(reward)
         self.learner.end(reward)
-        episode_ended.notify(self.num_steps, self.tot_reward)
+        #episode_ended.notify(self.num_steps, self.tot_reward)
