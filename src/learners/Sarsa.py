@@ -1,6 +1,5 @@
 from TDLearner import TDLearner
 
-
 class Sarsa(TDLearner):
 
     def update_theta(self, alpha, reward, phi_ns):

@@ -4,6 +4,7 @@ from learners.ExperienceReplay import ExperienceReplay
 from learners.RewardShaping import RewardShaping
 from policies.EGreedy import EGreedy
 from features.Feature import Feature
+from features.ale.RAM import RAM
 from traces.Eligibility import Eligibility
 from rlglue.agent import AgentLoader as AgentLoader
 from RLGlueAgent import RLGlueAgent
@@ -23,8 +24,8 @@ if __name__ == "__main__":
                         default=0.5, help='learning rate')
     parser.add_argument('--lambda_', metavar='L', type=float,
                         default=0.9, help='trace decay')
-    parser.add_argument('--epsilon', metavar='E', type=float,
-                        default=0.05, help='exploration rate')
+    parser.add_argument('--normalization', metavar='NO', type=bool,
+                        default=False, help='normalize alpha and reward')
     # None, TileCoding, RBF, RAM, Basic, BASS
     parser.add_argument('--features', metavar='F', type=str,
                         default='None', help='features to use')
@@ -33,6 +34,8 @@ if __name__ == "__main__":
     # Random, EGreedy
     parser.add_argument('--policy', metavar='P', type=str,
                         default='EGreedy', help='agent policy')
+    parser.add_argument('--epsilon', metavar='E', type=float,
+                        default=0.05, help='exploration rate')
     # Eligibility
     parser.add_argument('--trace', metavar='TR', type=str,
                         default='Eligibility', help='type of trace used')
@@ -61,8 +64,8 @@ if __name__ == "__main__":
     p_kwargs = {'EGreedy': {'epsilon': args.epsilon}}
     policy = policies[args.policy](**p_kwargs[args.policy])
 
-    features = {'None': Feature}
-    f_kwargs = {'None': {'state_length': observation_size}}
+    features = {'None': Feature, 'RAM': RAM}
+    f_kwargs = {'None': {'state_length': observation_size}, 'RAM': {}}
     feature = features[args.features](**f_kwargs[args.features])
 
     traces = {'Eligibility': Eligibility}
@@ -76,6 +79,7 @@ if __name__ == "__main__":
     q_sarsa_kwargs = {'actions': args.actions,
                       'alpha': args.alpha,
                       'gamma': args.gamma,
+                      'normalization': args.normalization,
                       'policy': policy,
                       'trace': trace,
                       'features': feature}

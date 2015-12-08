@@ -6,9 +6,6 @@ class Generic(Experiment):
         self.learner = learner
         self.environment = environment
 
-    def in_step_limit(self, step):
-        return not self.max_steps or step < self.max_steps
-
     def run_episode(self):
         state = self.environment.start()
         action = self.learner.start(state)
@@ -19,4 +16,5 @@ class Generic(Experiment):
             if terminal:
                 break
             action = self.learner.step(reward, state)
+            step += 1
         self.learner.end(reward)

@@ -8,6 +8,9 @@ class Experiment(object):
         self.current_episode = 0
         self.current_trial = 0
 
+    def in_step_limit(self, step):
+        return not self.max_steps or step < self.max_steps
+
     def run_episode(self):
         pass
 

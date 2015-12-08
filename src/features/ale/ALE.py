@@ -1,4 +1,4 @@
-from Feature import Feature
+from features.Feature import Feature
 import numpy as np
 
 class ALE(Feature):
@@ -30,7 +30,7 @@ class ALE(Feature):
         return state[128:33728]
 
     def ram_data(self, state):
-        return state[:128]
+        return np.array(state[:128], dtype=np.ubyte)
         
     '''
     pairwise features for binary vectors. Calculates and of all

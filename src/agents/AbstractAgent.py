@@ -132,6 +132,7 @@ class AbstractAgent(Agent,object):
         self.log_value('episode',self.num_eps)
         self.log_value('steps',self.ep_steps)
         self.log_value('reward',self.ep_rew)
+        print('episode: ' + str(self.num_eps) + '\t steps: '+ str(self.ep_steps) + '\t reward: ' + str(self.ep_rew))
         self.num_eps+=1
 
 
