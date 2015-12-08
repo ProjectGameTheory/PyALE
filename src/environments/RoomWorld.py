@@ -52,7 +52,7 @@ class RoomWorld(GridWorld):
 
     def to_binary(self, position, flags_taken):
     	state = GridWorld.to_binary(self, position)
-    	return np.array([state, flags_taken])
+    	return np.append(state, flags_taken)
 
    	def start(self):
    		self.current_state = np.array([self.begin, self.flags_taken])
