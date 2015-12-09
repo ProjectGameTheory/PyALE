@@ -57,3 +57,5 @@ docs/_build/
 
 # PyBuilder
 target/
+# added by GitSavvy
+**/.DS_Store

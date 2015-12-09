@@ -5,7 +5,7 @@ class Learner(object):
     '''
     Only works with binary features (non-sparse)
     '''
-    identifier = 0
+    identifier = -1
     def __init__(self):
         self.num_steps = 0
         self.tot_reward = 0

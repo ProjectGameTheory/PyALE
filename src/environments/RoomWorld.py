@@ -3,9 +3,10 @@ import numpy as np
 import random
 
 class RoomWorld(MultiEnvironment):
-	def __init__(self, size=[10,10], population_size=0, ids=None, begins=None, goal=[0,0], flags=None, *args, **kwargs):
+	def __init__(self, grid, population_size=0, ids=None, begins=None, goal=[0,0], *args, **kwargs):
+		self.grid = np.array(grid)
+		self.size = np.shape(self.grid)
 		super(RoomWorld, self).__init__(*args, **kwargs)
-		self.size = size
 		# Number of agents in this environment
 		self.population_size = population_size
 		# Begin positions of agents
@@ -15,60 +16,62 @@ class RoomWorld(MultiEnvironment):
 		if goal is None:
 			self.goal = self.random_position()
 		# 4 possible moves
-		self.directions = np.array([[0,1], [1,0], [0,-1], [-1, 0]])
+		self.directions = np.array([[1,0], [0,1], [-1,0], [0, -1]])
 		# Flags to collect
-		self.flags = np.array(flags) # flags must be a list of coordinates: [[X1,Y1], [X2,Y2], ...]
-		self.flags_taken = np.zeros(len(self.flags)) # 0=flag not taken, ID=flag taken by agent with ID
-		# Walls are hard-coded
-		self.horizontal_walls = np.array([[0,5,0,6], [2,5,2,6], [3,5,3,6], [4,5,4,6], [5,5,5,6], [0,8,0,9], [1,8,1,9], [2,8,2,9], [3,8,3,9], [5,8,5,9], [6,8,6,9], [7,8,7,9], [8,8,8,9], [6,3,6,4], [8,3,8,4], [9,3,9,4], [10,3,10,4], [11,3,11,4], [12,3,12,4]])
-		self.vertical_walls = np.array([[5,0,6,0], [5,1,6,1], [5,2,6,2], [5,3,6,3], [5,4,6,4], [5,5,6,5], [5,6,6,6], [5,8,6,8], [5,9,6,9], [5,10,6,10], [5,11,6,11], [5,12,6,12], [8,4,9,4], [8,5,9,5], [8,6,9,6], [8,8,9,8], [12,0,13,0], [12,2,13,2], [12,3,13,3], [12,4,13,4], [12,5,13,5], [12,6,13,6], [12,7,13,7], [12,8,13,8], [12,9,13,9], [12,10,13,10], [12,11,13,11], [12,12,13,12]])
+		self.flags_taken = dict()
+		for agent_id in ids:
+			self.flags_taken[agent_id] = []
+		return
 
 	def random_position(self):
-		return [random.randint(0, self.size[0]), random.randint(0, self.size[1])]
+		return np.array([random.randint(0, self.size[0]), random.randint(0, self.size[1])])
+
+	def get_cell(self,position):
+		return self.grid[position[0]][position[1]]
+
+	def vertical_wall(self, position):
+		walls = self.get_cell(position)[0]
+    		return int(walls) & 1
+
+	def horizontal_wall(self, position):
+		walls = self.get_cell(position)[0]
+    		return int(walls) & 2
 
 	def move(self, position, direction):
 		#Direction 0=up, 1=right, 2=down, 3=left
-		coordinates = {0: [[x,y] for x, y in zip(self.horizontal_walls[:,0], self.horizontal_walls[:,1])],
-		               1: [[x,y] for x, y in zip(self.vertical_walls[:,0],   self.vertical_walls[:,1])],
-		               2: [[x,y] for x, y in zip(self.horizontal_walls[:,2], self.horizontal_walls[:,3])],
-		               3: [[x,y] for x, y in zip(self.vertical_walls[:,2],   self.vertical_walls[:,3])]}.get(direction)
-		if position in coordinates:
-			return np.array(position)
+		new_position = position + self.directions[direction]
+		if direction == 0 and (new_position[0] >= self.size[0] or self.horizontal_wall(new_position)):
+			return position
+		elif direction == 2 and (new_position[0] < 0 or self.horizontal_wall(position)):
+			return position
+		elif direction == 1 and (new_position[1] >= self.size[1] or self.vertical_wall(new_position)):
+			return position
+		elif direction == 3 and (new_position[1] < 0 or self.vertical_wall(new_position)):
+			return position
 		else:
-			moved = np.array(position) + self.directions[direction]
-			return self.in_grid(moved)
-
-	def in_grid(self, position):
-		if position[0] < 0:
-			position[0] = 0
-		if position[0] >= self.size[0]:
-			position[0] = self.size[0]-1
-		if position[1] < 0:
-			position[1] = 0
-		if position[1] >= self.size[1]:
-			position[1] = self.size[1]-1
-		return position
+			return new_position
 
 	def terminal(self, position):
+		print self.goal
+		print position
 		return np.array_equal(position, self.goal)
 
 	def at_flag(self, position):
-		return position in self.flags
+		return self.get_cell(position)[1]
 
 	def flag_taken(self, position):
-		if position in self.flags:
-			pos = [i for i,x in enumerate(self.flags) if np.array_equal(x, position)]
-			return self.flags_taken[pos[0]]
+		flag = self.get_cell(position)[1]
+		return (flag and any(flag in agent_flags for agent_flags in self.flags_taken.values()))
 
 	def take_flag(self, id, position):
-		if position in self.flags:
-			pos = [i for i,x in enumerate(self.flags) if np.array_equal(x, position)]
-			self.flags_taken[pos[0]] = id
+		flag = self.get_cell(position)[1]
+		if flag:
+			self.flags_taken[id].append(flag)
 
 	def reward(self, id, position):
 		reward = 0
 		if self.terminal(position):
-			flags_collected = self.flags_taken.count(id)
+			flags_collected = len(self.flags_taken[id])
 			reward = 100 * flags_collected
 		return reward
 
