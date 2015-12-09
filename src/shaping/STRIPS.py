@@ -14,11 +14,11 @@ class STRIPS(Shaper):
     def start(self):
         self.current_step = 0
 
-    def to_strips(self, state):
-        return self.convert(state)
+    def to_strips(self, id, state):
+        return self.convert(id, state)
 
-    def match_state(self, state):
-        strips_state = self.to_strips(state)
+    def match_state(self, id, state):
+        strips_state = self.to_strips(id, state)
         if self.match_post(strips_state, self.strips_plan[self.current_step]):
             self.current_step += 1
         return self.current_step
@@ -27,5 +27,5 @@ class STRIPS(Shaper):
         # po1 and po2 sets of strings
         return po1 == po2
 
-    def potential(self, state):
-        return self.omega*self.match_state(state)
+    def potential(self, id, state):
+        return self.omega*self.match_state(id, state)

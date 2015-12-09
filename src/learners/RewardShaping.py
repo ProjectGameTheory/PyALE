@@ -4,14 +4,14 @@ from Learner import Learner
 
 class RewardShaping(Learner):
 
-    def __init__(self, learner=None, shaper=None):
-        super(RewardShaping, self).__init__()
+    def __init__(self, learner=None, shaper=None, **kwargs):
+        super(RewardShaping, self).__init__(**kwargs)
         self.learner = learner
         self.shaper = shaper
 
     def shaping_reward(self, state, state_ns):
-        potential_s = self.shaper.potential(state)
-        potential_ns = self.shaper.potential(state_ns)
+        potential_s = self.shaper.potential(self.learner.id,state)
+        potential_ns = self.shaper.potential(self.learner.id,state_ns)
         return self.learner.gamma * potential_ns - potential_s
 
     def start(self, state):

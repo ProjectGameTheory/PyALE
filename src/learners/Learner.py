@@ -5,11 +5,14 @@ class Learner(object):
     '''
     Only works with binary features (non-sparse)
     '''
-    identifier = -1
-    def __init__(self):
+    identifier = 0
+    def __init__(self, id=None):
         self.num_steps = 0
         self.tot_reward = 0
-        self.assign_id()
+        if id:
+            self.id = id
+        else:
+            self.assign_id()
 
     def assign_id(self):
         self.id = Learner.identifier

@@ -4,8 +4,8 @@ import numpy as np
 
 class TDLearner(Learner):
 
-    def __init__(self, actions=[], alpha=0.1, gamma=0.999, policy=None, trace=None, features=None, normalization=False):
-        super(TDLearner, self).__init__()
+    def __init__(self, actions=[], alpha=0.1, gamma=0.999, policy=None, trace=None, features=None, normalization=False, **kwargs):
+        super(TDLearner, self).__init__(**kwargs)
         self.actions = np.array(actions)
         self.alpha = alpha
         self.gamma = gamma
