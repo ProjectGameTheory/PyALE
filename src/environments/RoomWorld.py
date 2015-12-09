@@ -52,6 +52,8 @@ class RoomWorld(MultiEnvironment):
 			return new_position
 
 	def terminal(self, position):
+		print self.goal
+		print position
 		return np.array_equal(position, self.goal)
 
 	def at_flag(self, position):

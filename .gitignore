@@ -59,6 +59,3 @@ docs/_build/
 target/
 # added by GitSavvy
 **/.DS_Store
-
-# added by GitSavvy
-/src/episode.csv

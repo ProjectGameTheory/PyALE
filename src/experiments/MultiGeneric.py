@@ -24,6 +24,7 @@ class MultiGeneric(Experiment):
             for learner in learners:
                 id = learner.id
                 state, reward, terminals[id] = self.environment.step(id, actions[id])
+                break
                 if not terminals[id]:
                     actions[id] = learner.step(reward, state)
                 else:
