@@ -8,7 +8,6 @@ class MultiGeneric(Experiment):
         self.environment = environment
 
     def run_episode(self):
-        learners = np.random.permutation(self.learners)
         actions = {}
         terminals = {}
         step = 0
