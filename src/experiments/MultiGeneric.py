@@ -11,8 +11,9 @@ class MultiGeneric(Experiment):
         actions = {}
         terminals = {}
         step = 0
-        for learner in self.learners:
-            state = self.environment.start(id)
+        learners = np.random.permutation(self.learners)
+        for learner in learners:
+            state = self.environment.start(learner.id)
             action = learner.start(state)
             actions[learner.id] = action
             terminals[id] = False
