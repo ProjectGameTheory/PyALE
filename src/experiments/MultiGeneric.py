@@ -17,7 +17,7 @@ class MultiGeneric(Experiment):
             action = learner.start(state)
             actions[learner.id] = action
             terminals[learner.id] = False
-        while self.in_step_limit(step):
+        while self.in_step_limit(step) and len(learners):
             learners = np.random.permutation(self.learners)
             # only select learners that are not finished
             learners = [l for l in learners if l.id not in terminals or not terminals[l.id]]
