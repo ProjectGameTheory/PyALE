@@ -57,6 +57,8 @@ def state_to_strips(state):
 
 nr_of_agents = 2
 learners = []
+#begins = [[7,4]]
+begins = [[7,4], [7,14]]
 #agents
 for i in range(nr_of_agents):
     shaper = STRIPS(strips_plan=strips_plans_individual[i], convert=state_to_strips, omega=600/9)
@@ -67,7 +69,7 @@ for i in range(nr_of_agents):
     sarsa = Sarsa(actions=actions, alpha=0.1, gamma=0.9, policy=e_greedy, features=no_features, trace=trace)
     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
 
-environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=[[7,4], [7,14]],goal=[1,1])
+environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
 
 experiment = MultiGeneric(max_steps=None, episodes=5000, trials=1, learners=learners, environment=environment)
 

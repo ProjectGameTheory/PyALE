@@ -18,8 +18,9 @@ class RoomWorld(MultiEnvironment):
         # Number of agents in this environment
         self.population_size = population_size
         # Begin positions of agents
-        self.current_states = dict(zip(ids, begins)) if len(
+        self.begins = dict(zip(ids, begins)) if len(
             ids) == len(begins) else {}
+        self.current_states = dict(self.begins)
         # Goal position of all agents
         self.goal = goal
         if goal is None:
@@ -119,6 +120,10 @@ class RoomWorld(MultiEnvironment):
         return bin_repr
 
     def start(self, id):
+        #As state also encodes position of other agents,
+        #after first episode, state of all agents (except last one) will be false
+        #because they will encode the non-updated position of other agents
+        self.current_states[id] = self.begins[id]
         return self.to_binary(id)
 
     def step(self, id, action):
