@@ -8,6 +8,7 @@ class MultiGeneric(Experiment):
         self.environment = environment
 
     def run_episode(self):
+        self.environment.start_setup()
         actions = {}
         terminals = {}
         step = 0

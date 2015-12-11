@@ -27,9 +27,12 @@ class RoomWorld(MultiEnvironment):
             self.goal = self.random_position()
         # 4 possible moves
         self.directions = np.array([[1, 0], [0, 1], [-1, 0], [0, -1]])
+        self.flag_setup()
+
+    def flag_setup(self):
         # Flags to collect
         self.flags_taken = dict()
-        for agent_id in ids:
+        for agent_id in self.current_states.keys():
             self.flags_taken[agent_id] = []
 
     def random_position(self):
@@ -83,47 +86,25 @@ class RoomWorld(MultiEnvironment):
         return reward
 
     # state of an agent:
-    # 1: his position encoded in binary
-    # 2: others position encoded in binary
-    # 3: flags left in room (for each flag: 0 for taken, 1 for available)
-    # 4: flags the agent has (for each flag: 1 for taken, 0 otherwise)
-    # agent needs to know both the flags he has and the flags left on board
-    # as others could also possess flags
-    # (but it doesn't matter to the agent which other agent has a specific flag
-    # , it's still unavailable)
+    # 1: 0 for each cell in the grid,
+    #    1 for the agent's cell number
+    # 2: 0 for each non-taken flag,
+    #    1 for each flag the agent possesses
     def to_binary(self, id):
-        # max number of bits needed to encode position
-        max_length = len(bin(self.size[0]*self.size[1] - 1)[2:])
-        bin_repr = []
-        for key, value in self.current_states.items():
-            value = value[0] + self.size[0] * value[1]
-            position = [int(x) for x in bin(value)[2:]]
-            # nb of bits needs to be the same for every position
-            while len(position) < max_length:
-                position.insert(0, 0)
-            # put the agent's position first
-            if key == id:
-                position.extend(bin_repr)
-                bin_repr = position
-            else:
-                bin_repr.extend(position)
-        available_flags = [1 for flag in self.flags]
-        taken_flags = [0 for flag in self.flags]
-        for key, taken in self.flags_taken.items():
-            for flag in taken:
-                flag_idx = self.flags.index(flag)
-                available_flags[flag_idx] = 0
-                if key == id:
-                    taken_flags[flag_idx] = 1
-        bin_repr.extend(available_flags)
-        bin_repr.extend(taken_flags)
+        grid_size = self.size[0]*self.size[1]
+        bin_repr = np.zeros(grid_size+len(self.flags))
+        pos = self.current_states[id]
+        bin_repr[pos[0]+self.size[0]*pos[1]] = 1
+        for flag in self.flags_taken[id]:
+            flag_idx = self.flags.index(flag)
+            bin_repr[grid_size+flag_idx] = 1
         return bin_repr
 
+    def start_setup(self):
+        self.current_states = dict(self.begins)
+        self.flag_setup()
+
     def start(self, id):
-        #As state also encodes position of other agents,
-        #after first episode, state of all agents (except last one) will be false
-        #because they will encode the non-updated position of other agents
-        self.current_states[id] = self.begins[id]
         return self.to_binary(id)
 
     def step(self, id, action):

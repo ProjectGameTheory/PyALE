@@ -41,10 +41,7 @@ for row in grid:
 pos_length = len(bin(grid_size[0]*grid_size[1]-1)[2:])
 num_flags = len(flags) 
 def state_to_strips(state):
-    # first bits are agent's position (binary encoded)
-    pos_idx = 0
-    for bit in state[:pos_length]:
-        pos_idx = (pos_idx << 1) | bit
+    pos_idx = np.where(state[:grid_size[0]*grid_size[1]] == 1)[0][0]
     pos = [pos_idx % grid_size[0], pos_idx / grid_size[0]]
     # last bits are agent's flags
     taken = state[-num_flags:]
@@ -64,7 +61,7 @@ for i in range(nr_of_agents):
     shaper = STRIPS(strips_plan=strips_plans_individual[i], convert=state_to_strips, omega=600/9)
     #agent
     e_greedy = EGreedy(epsilon=0.1)
-    no_features = Feature(state_length= pos_length*nr_of_agents + len(flags)*2)
+    no_features = Feature(state_length= grid_size[0]*grid_size[1] + len(flags))
     trace = Eligibility(lambda_=0.4, actions=actions, shape=(no_features.num_features(), len(actions)))
     sarsa = Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=e_greedy, features=no_features, trace=trace)
     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
