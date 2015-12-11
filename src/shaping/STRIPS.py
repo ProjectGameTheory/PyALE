@@ -19,8 +19,11 @@ class STRIPS(Shaper):
 
     def match_state(self, state):
         strips_state = self.to_strips(state)
-        if self.match_post(strips_state, self.strips_plan[self.current_step]):
-            self.current_step += 1
+        try:
+            i = self.strips_plan.index(strips_state)
+            self.current_step = i
+        except:
+            pass
         return self.current_step
 
     def match_post(self, po1, po2):

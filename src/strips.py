@@ -63,10 +63,10 @@ begins = [[7,4], [7,14]]
 for i in range(nr_of_agents):
     shaper = STRIPS(strips_plan=strips_plans_individual[i], convert=state_to_strips, omega=600/9)
     #agent
-    e_greedy = EGreedy(epsilon=0.2)
+    e_greedy = EGreedy(epsilon=0.1)
     no_features = Feature(state_length= pos_length*nr_of_agents + len(flags)*2)
-    trace = Eligibility(lambda_=0.9, actions=actions, shape=(no_features.num_features(), len(actions)))
-    sarsa = Sarsa(actions=actions, alpha=0.1, gamma=0.9, policy=e_greedy, features=no_features, trace=trace)
+    trace = Eligibility(lambda_=0.4, actions=actions, shape=(no_features.num_features(), len(actions)))
+    sarsa = Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=e_greedy, features=no_features, trace=trace)
     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
 
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
