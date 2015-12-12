@@ -8,6 +8,7 @@ class MultiGeneric(Experiment):
         self.environment = environment
 
     def run_episode(self):
+        self.environment.start_setup()
         actions = {}
         terminals = {}
         step = 0
@@ -16,11 +17,11 @@ class MultiGeneric(Experiment):
             state = self.environment.start(learner.id)
             action = learner.start(state)
             actions[learner.id] = action
-            terminals[id] = False
-        while self.in_step_limit(step):
+            terminals[learner.id] = False
+        while self.in_step_limit(step) and len(learners):
             learners = np.random.permutation(self.learners)
             # only select learners that are not finished
-            learners = learners[np.where([terminals[l.id] for l in learners])[0]]
+            learners = [l for l in learners if l.id not in terminals or not terminals[l.id]]
             for learner in learners:
                 id = learner.id
                 state, reward, terminals[id] = self.environment.step(id, actions[id])
@@ -29,5 +30,4 @@ class MultiGeneric(Experiment):
                 else:
                     learner.end(reward)
             step += 1
-            
 
