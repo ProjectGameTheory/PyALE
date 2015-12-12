@@ -50,10 +50,14 @@ class RoomWorld(MultiEnvironment):
     def move(self, id, position, direction):
         # Direction 0=up, 1=right, 2=down, 3=left
         new_position = position + self.directions[direction]
+        collision = False
         for agent_id in self.current_states.keys():
             if agent_id != id and np.array_equal(self.current_states[agent_id], new_position):
-                return position
-        if direction == 0 and (new_position[0] >= self.size[0] or self.horizontal_wall(new_position)):
+                collision = True
+                
+        if collision:
+            return position
+        elif direction == 0 and (new_position[0] >= self.size[0] or self.horizontal_wall(new_position)):
             return position
         elif direction == 2 and (new_position[0] < 0 or self.horizontal_wall(position)):
             return position
