@@ -4,8 +4,8 @@ import random
 
 
 class RoomWorld(MultiEnvironment):
-
     def __init__(self, grid, population_size=0, ids=None, begins=None, goal=[0, 0], *args, **kwargs):
+        super(RoomWorld, self).__init__(*args, **kwargs)
         self.grid = grid
         self.size = np.shape(grid)
         # register the names of all flags
@@ -14,12 +14,10 @@ class RoomWorld(MultiEnvironment):
             for pos in row:
                 if pos[1]:
                     self.flags.append(pos[1])
-        super(RoomWorld, self).__init__(*args, **kwargs)
         # Number of agents in this environment
         self.population_size = population_size
         # Begin positions of agents
-        self.begins = dict(zip(ids, begins)) if len(
-            ids) == len(begins) else {}
+        self.begins = dict(zip(ids, begins)) if len(ids) == len(begins) else {}
         self.current_states = dict(self.begins)
         # Goal position of all agents
         self.goal = goal
@@ -49,9 +47,12 @@ class RoomWorld(MultiEnvironment):
         walls = self.get_cell(position)[0]
         return int(walls) & 2
 
-    def move(self, position, direction):
+    def move(self, id, position, direction):
         # Direction 0=up, 1=right, 2=down, 3=left
         new_position = position + self.directions[direction]
+        for agent_id in self.current_states.keys():
+            if agent_id != id and np.array_equal(self.current_states[agent_id], new_position):
+                return position
         if direction == 0 and (new_position[0] >= self.size[0] or self.horizontal_wall(new_position)):
             return position
         elif direction == 2 and (new_position[0] < 0 or self.horizontal_wall(position)):
@@ -108,7 +109,7 @@ class RoomWorld(MultiEnvironment):
         return self.to_binary(id)
 
     def step(self, id, action):
-        position = self.move(self.current_states[id], action)
+        position = self.move(id, self.current_states[id], action)
         if self.at_flag(position):
             if not self.flag_taken(position):
                 # take_flag modifies self.flags_taken
