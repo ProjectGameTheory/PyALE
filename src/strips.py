@@ -16,6 +16,7 @@ from monitors.Writer import Writer
 
 from strips_plans import *
 from ast import literal_eval
+import sys
 
 grid = []
 
@@ -39,7 +40,7 @@ for row in grid:
             flags.append(pos[1])
 
 pos_length = len(bin(grid_size[0]*grid_size[1]-1)[2:])
-num_flags = len(flags) 
+num_flags = len(flags)
 
 def state_to_strips(state):
     pos_idx = np.where(state[:grid_size[0]*grid_size[1]] == 1)[0][0]
@@ -54,6 +55,8 @@ def state_to_strips(state):
     return strips_state
 
 actions = [0, 1, 2, 3]
+
+experiments = {}
 
 #### Experiment 1: 2 agents with no plan or heuristic
 #####################################################
@@ -71,29 +74,47 @@ for i in range(nr_of_agents):
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins, goal=[1,1])
 experiment = MultiGeneric(max_steps=None, episodes=5000, trials=1, learners=learners, environment=environment)
 
-## ==> Why doesn't this work?
-
+experiments['no_plan'] = experiment
 
 #### Experiment 2: 2 agents with joint-plan
 ###########################################
 
+nr_of_agents = 2
+learners = []
+begins = [[7,4], [7,14]]
+
+for i in range(nr_of_agents):
+    shaper = STRIPS(strips_plan=strips_plans_joint[i], convert=state_to_strips, omega=600/9)
+    e_greedy = EGreedy(epsilon=0.1)
+    no_features = Feature(state_length= grid_size[0]*grid_size[1] + len(flags))
+    trace = Eligibility(lambda_=0.4, actions=actions, shape=(no_features.num_features(), len(actions)))
+    sarsa = Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=e_greedy, features=no_features, trace=trace)
+    learners.append(RewardShaping(learner=sarsa, shaper=shaper))
+
+environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
+experiment = MultiGeneric(max_steps=None, episodes=5000, trials=1, learners=learners, environment=environment)
+
+experiments['joint_plan'] = experiment
+
 #### Experiment 3: 2 agents with individual-plans
 #################################################
 
-# nr_of_agents = 2
-# learners = []
-# begins = [[7,4], [7,14]]
+nr_of_agents = 2
+learners = []
+begins = [[7,4], [7,14]]
 
-# for i in range(nr_of_agents):
-#     shaper = STRIPS(strips_plan=strips_plans_individual[i], convert=state_to_strips, omega=600/9)
-#     e_greedy = EGreedy(epsilon=0.1)
-#     no_features = Feature(state_length= grid_size[0]*grid_size[1] + len(flags))
-#     trace = Eligibility(lambda_=0.4, actions=actions, shape=(no_features.num_features(), len(actions)))
-#     sarsa = Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=e_greedy, features=no_features, trace=trace)
-#     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
+for i in range(nr_of_agents):
+    shaper = STRIPS(strips_plan=strips_plans_individual[i], convert=state_to_strips, omega=600/9)
+    e_greedy = EGreedy(epsilon=0.1)
+    no_features = Feature(state_length= grid_size[0]*grid_size[1] + len(flags))
+    trace = Eligibility(lambda_=0.4, actions=actions, shape=(no_features.num_features(), len(actions)))
+    sarsa = Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=e_greedy, features=no_features, trace=trace)
+    learners.append(RewardShaping(learner=sarsa, shaper=shaper))
 
-# environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
-# experiment = MultiGeneric(max_steps=None, episodes=5000, trials=1, learners=learners, environment=environment)
+environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
+experiment = MultiGeneric(max_steps=None, episodes=5000, trials=1, learners=learners, environment=environment)
+
+experiments['individual_plan'] = experiment
 
 #### Experiment 4: 2 agents with joint-plan and flag-heuristic
 ##############################################################
@@ -106,6 +127,12 @@ experiment = MultiGeneric(max_steps=None, episodes=5000, trials=1, learners=lear
 
 #### Run Experiment
 ###################
-experiment.run()
-writer.save()
-
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print "Please provide an experiment name."
+    else:
+        experiment_name = sys.argv[1]
+        print "Executing experiment: " + experiment_name
+        experiment = experiments[experiment_name]
+        experiment.run()
+        writer.save()
