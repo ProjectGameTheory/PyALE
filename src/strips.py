@@ -82,7 +82,8 @@ learners = []
 begins = [[7,4], [7,14]]
 
 for i in range(nr_of_agents):
-    shaper = STRIPS(strips_plan=strips_plans_joint[i], convert=state_to_strips, omega=600/9)
+    strips_plan = strips_plans_joint[i]
+    shaper = STRIPS(strips_plan=strips_plan, convert=state_to_strips, omega=600./len(strips_plan))
     e_greedy = EGreedy(epsilon=0.1)
     no_features = Feature(state_length= grid_size[0]*grid_size[1] + len(flags))
     trace = Eligibility(lambda_=0.4, actions=actions, shape=(no_features.num_features(), len(actions)))
@@ -102,7 +103,8 @@ learners = []
 begins = [[7,4], [7,14]]
 
 for i in range(nr_of_agents):
-    shaper = STRIPS(strips_plan=strips_plans_individual[i], convert=state_to_strips, omega=600/9)
+    strips_plan = strips_plans_individual[i]
+    shaper = STRIPS(strips_plan=strips_plan, convert=state_to_strips, omega=600./len(strips_plan))
     e_greedy = EGreedy(epsilon=0.1)
     no_features = Feature(state_length= grid_size[0]*grid_size[1] + len(flags))
     trace = Eligibility(lambda_=0.4, actions=actions, shape=(no_features.num_features(), len(actions)))
