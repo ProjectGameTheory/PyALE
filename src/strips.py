@@ -17,6 +17,7 @@ from monitors.Writer import Writer
 from strips_plans import *
 from ast import literal_eval
 import sys
+import os
 
 grid = []
 
@@ -25,13 +26,10 @@ with open("grid.txt") as f:
         grid.insert(0,literal_eval(line[:-1])) #Opposite order
 grid_size = np.shape(grid)
 
-#monitors
+#printer monitor
 printer = Printer()
 printer.follow(episode_ended)
 printer.activate()
-writer = Writer()
-writer.follow(episode_ended)
-writer.activate()
 
 flags = []
 for row in grid:
@@ -72,7 +70,7 @@ for i in range(nr_of_agents):
     learners.append(Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=e_greedy, features=no_features, trace=trace))
 
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins, goal=[1,1])
-experiment = MultiGeneric(max_steps=None, episodes=5000, trials=1, learners=learners, environment=environment)
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
 
 experiments['no_plan'] = experiment
 
@@ -92,7 +90,7 @@ for i in range(nr_of_agents):
     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
 
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
-experiment = MultiGeneric(max_steps=None, episodes=5000, trials=1, learners=learners, environment=environment)
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
 
 experiments['joint_plan'] = experiment
 
@@ -112,7 +110,7 @@ for i in range(nr_of_agents):
     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
 
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
-experiment = MultiGeneric(max_steps=None, episodes=5000, trials=1, learners=learners, environment=environment)
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
 
 experiments['individual_plan'] = experiment
 
@@ -128,11 +126,16 @@ experiments['individual_plan'] = experiment
 #### Run Experiment
 ###################
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print "Please provide an experiment name."
+    if len(sys.argv) < 2:
+        print "Please provide experiment names. Choose out of the following: " + ', '.join(experiments.keys())
     else:
-        experiment_name = sys.argv[1]
-        print "Executing experiment: " + experiment_name
-        experiment = experiments[experiment_name]
-        experiment.run()
-        writer.save()
+        for experiment_name in sys.argv[1:]:
+            writer = Writer(folderpath=experiment_name)
+            writer.follow(episode_ended)
+            writer.activate()
+            print "Executing experiment: " + experiment_name
+            experiment = experiments[experiment_name]
+            experiment.run()
+            if not os.path.exists(experiment_name): #Make directory with experiment_name if necessary
+                os.makedirs(experiment_name)
+            writer.save()
