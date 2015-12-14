@@ -52,9 +52,10 @@ class RoomWorld(MultiEnvironment):
         new_position = position + self.directions[direction]
         collision = False
         for agent_id in self.current_states.keys():
-            if agent_id != id and np.array_equal(self.current_states[agent_id], new_position):
+            if agent_id != id and np.array_equal(self.current_states[agent_id], new_position) and not self.terminal(new_position):
                 collision = True
-                
+                break
+
         if collision:
             return position
         elif direction == 0 and (new_position[0] >= self.size[0] or self.horizontal_wall(new_position)):
