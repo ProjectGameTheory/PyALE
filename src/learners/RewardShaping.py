@@ -23,8 +23,7 @@ class RewardShaping(Learner):
         phi_ns = self.learner.features.phi(state)
         s = self.shaping_reward(self.learner.phi, phi_ns)
         reward += s
-        super(RewardShaping, self).step(reward, state)
-            
+        super(RewardShaping, self).step(reward, state) 
         return self.learner.step(reward, state)
 
     def end(self, reward):

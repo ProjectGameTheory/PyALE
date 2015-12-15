@@ -1,6 +1,8 @@
 from learners.Sarsa import Sarsa
 from learners.RewardShaping import RewardShaping
 from shaping.STRIPS import STRIPS
+from shaping.FlagShaper import FlagShaper
+from shaping.CombinedShaper import CombinedShaper
 from policies.EGreedy import EGreedy
 from traces.Eligibility import Eligibility
 from features.Feature import Feature
@@ -119,11 +121,66 @@ experiments['individual_plan'] = experiment
 #### Experiment 4: 2 agents with joint-plan and flag-heuristic
 ##############################################################
 
+nr_of_agents = 2
+learners = []
+begins = [[7,4], [7,14]]
+
+for i in range(nr_of_agents):
+    strips_plan = strips_plans_joint[i]
+    shaper = CombinedShaper(strips_plan=strips_plan, convert=state_to_strips, num_flags=num_flags,
+                            omega=600./(float (len(strips_plan) + num_flags)))
+    e_greedy = EGreedy(epsilon=0.1)
+    no_features = Feature(state_length= grid_size[0]*grid_size[1] + len(flags))
+    trace = Eligibility(lambda_=0.4, actions=actions, shape=(no_features.num_features(), len(actions)))
+    sarsa = Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=e_greedy, features=no_features, trace=trace)
+    learners.append(RewardShaping(learner=sarsa, shaper=shaper))
+
+environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+
+experiments['joint_plan_flags'] = experiment
+
 #### Experiment 5: 2 agents with individual-plans and flag-heuristic
 ####################################################################
 
+nr_of_agents = 2
+learners = []
+begins = [[7,4], [7,14]]
+
+for i in range(nr_of_agents):
+    strips_plan = strips_plans_individual[i]
+    shaper = CombinedShaper(strips_plan=strips_plan, convert=state_to_strips, num_flags=num_flags, 
+                            omega=600./(float (len(strips_plan) + num_flags)))
+    e_greedy = EGreedy(epsilon=0.1)
+    no_features = Feature(state_length= grid_size[0]*grid_size[1] + len(flags))
+    trace = Eligibility(lambda_=0.4, actions=actions, shape=(no_features.num_features(), len(actions)))
+    sarsa = Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=e_greedy, features=no_features, trace=trace)
+    learners.append(RewardShaping(learner=sarsa, shaper=shaper))
+
+environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+
+experiments['individual_plan_flags'] = experiment
+
 #### Experiment 6: 2 agents with flag-heuristic
 ###############################################
+
+nr_of_agents = 2
+learners = []
+begins = [[7,4], [7,14]]
+
+for i in range(nr_of_agents):
+    shaper = FlagShaper(num_flags=num_flags)
+    e_greedy = EGreedy(epsilon=0.1)
+    no_features = Feature(state_length= grid_size[0]*grid_size[1] + len(flags))
+    trace = Eligibility(lambda_=0.4, actions=actions, shape=(no_features.num_features(), len(actions)))
+    sarsa = Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=e_greedy, features=no_features, trace=trace)
+    learners.append(RewardShaping(learner=sarsa, shaper=shaper))
+
+environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins, goal=[1,1])
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+
+experiments['flag_based'] = experiment
 
 #### Run Experiment
 ###################
