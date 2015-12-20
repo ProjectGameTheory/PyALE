@@ -92,18 +92,21 @@ class RoomWorld(MultiEnvironment):
         return reward
 
     # state of an agent:
-    # 1: 0 for each cell in the grid,
-    #    1 for the agent's cell number
-    # 2: 0 for each non-taken flag,
-    #    1 for each flag the agent possesses
+    # full grid per flag situation
+    # flag situation is: agent has some specific flags
+    # 1 for agent-position in the grid of its flag-situation
     def to_binary(self, id):
+        #flag situation
+        flags = ['1' if flag in self.flags_taken[id] else '0' for flag in self.flags]
+        #convert binary array to interger
+        flag_idx = int(''.join(flags), 2)
         grid_size = self.size[0]*self.size[1]
-        bin_repr = np.zeros(grid_size+len(self.flags))
+        #agent position index
         pos = self.current_states[id]
-        bin_repr[pos[0]+self.size[0]*pos[1]] = 1
-        for flag in self.flags_taken[id]:
-            flag_idx = self.flags.index(flag)
-            bin_repr[grid_size+flag_idx] = 1
+        pos_idx = pos[0]+self.size[0]*pos[1]
+        #binary representation
+        bin_repr = np.zeros(grid_size*(2**len(self.flags)))
+        bin_repr[grid_size*flag_idx + pos_idx] = 1
         return bin_repr
 
     def start_setup(self):

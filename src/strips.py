@@ -43,18 +43,23 @@ pos_length = len(bin(grid_size[0]*grid_size[1]-1)[2:])
 num_flags = len(flags)
 
 def state_to_strips(state):
-    pos_idx = np.where(state[:grid_size[0]*grid_size[1]] == 1)[0][0]
+    agent_idx = np.where(state == 1)[0][0]
+    flag_idx = agent_idx / (grid_size[0]*grid_size[1])
+    pos_idx = agent_idx % (grid_size[0]*grid_size[1])
     pos = [pos_idx % grid_size[0], pos_idx / grid_size[0]]
-    # last bits are agent's flags
-    taken = state[-num_flags:]
+    # convert flag_idx in flags taken
+    taken = bin(flag_idx)[2:]
     strips_state = set([])
-    for i in range(num_flags):
-        if taken[i]:
-            strips_state.add('taken_flag' + flags[i])
+    shift = num_flags - len(taken)
+    for i in range(len(taken)):
+        if taken[i] == '1':
+            strips_state.add('taken_flag' + flags[i+shift])
     strips_state.add('in_' + grid[pos[0]][pos[1]][2])
     return strips_state
 
 actions = [0, 1, 2, 3]
+
+state_length = grid_size[0]*grid_size[1]*(2**num_flags)
 
 experiments = {}
 
@@ -67,7 +72,7 @@ begins = [[7,4], [7,14]]
 
 for i in range(nr_of_agents):
     e_greedy = EGreedy(epsilon=0.1)
-    no_features = Feature(state_length=grid_size[0]*grid_size[1]+len(flags))
+    no_features = Feature(state_length=state_length)
     trace = Eligibility(lambda_=0.4, actions=actions, shape=(no_features.num_features(), len(actions)))
     learners.append(Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=e_greedy, features=no_features, trace=trace))
 
@@ -87,7 +92,7 @@ for i in range(nr_of_agents):
     strips_plan = strips_plans_joint[i]
     shaper = STRIPS(strips_plan=strips_plan, convert=state_to_strips, omega=600./len(strips_plan))
     e_greedy = EGreedy(epsilon=0.1)
-    no_features = Feature(state_length= grid_size[0]*grid_size[1] + len(flags))
+    no_features = Feature(state_length=state_length)
     trace = Eligibility(lambda_=0.4, actions=actions, shape=(no_features.num_features(), len(actions)))
     sarsa = Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=e_greedy, features=no_features, trace=trace)
     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
@@ -108,7 +113,7 @@ for i in range(nr_of_agents):
     strips_plan = strips_plans_individual[i]
     shaper = STRIPS(strips_plan=strips_plan, convert=state_to_strips, omega=600./len(strips_plan))
     e_greedy = EGreedy(epsilon=0.1)
-    no_features = Feature(state_length= grid_size[0]*grid_size[1] + len(flags))
+    no_features = Feature(state_length= state_length)
     trace = Eligibility(lambda_=0.4, actions=actions, shape=(no_features.num_features(), len(actions)))
     sarsa = Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=e_greedy, features=no_features, trace=trace)
     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
@@ -130,7 +135,7 @@ for i in range(nr_of_agents):
     shaper = CombinedShaper(strips_plan=strips_plan, convert=state_to_strips, num_flags=num_flags,
                             omega=600./(float (len(strips_plan) + num_flags)))
     e_greedy = EGreedy(epsilon=0.1)
-    no_features = Feature(state_length= grid_size[0]*grid_size[1] + len(flags))
+    no_features = Feature(state_length= state_length)
     trace = Eligibility(lambda_=0.4, actions=actions, shape=(no_features.num_features(), len(actions)))
     sarsa = Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=e_greedy, features=no_features, trace=trace)
     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
@@ -152,7 +157,7 @@ for i in range(nr_of_agents):
     shaper = CombinedShaper(strips_plan=strips_plan, convert=state_to_strips, num_flags=num_flags, 
                             omega=600./(float (len(strips_plan) + num_flags)))
     e_greedy = EGreedy(epsilon=0.1)
-    no_features = Feature(state_length= grid_size[0]*grid_size[1] + len(flags))
+    no_features = Feature(state_length= state_length)
     trace = Eligibility(lambda_=0.4, actions=actions, shape=(no_features.num_features(), len(actions)))
     sarsa = Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=e_greedy, features=no_features, trace=trace)
     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
@@ -172,7 +177,7 @@ begins = [[7,4], [7,14]]
 for i in range(nr_of_agents):
     shaper = FlagShaper(num_flags=num_flags)
     e_greedy = EGreedy(epsilon=0.1)
-    no_features = Feature(state_length= grid_size[0]*grid_size[1] + len(flags))
+    no_features = Feature(state_length= state_length)
     trace = Eligibility(lambda_=0.4, actions=actions, shape=(no_features.num_features(), len(actions)))
     sarsa = Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=e_greedy, features=no_features, trace=trace)
     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
