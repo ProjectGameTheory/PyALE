@@ -79,7 +79,8 @@ for i in range(nr_of_agents):
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins, goal=[1,1])
 experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
 
-experiments['no_plan'] = experiment
+no_plan = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 1}
+experiments['no_plan'] = no_plan
 
 #### Experiment 2: 2 agents with joint-plan
 ###########################################
@@ -100,7 +101,8 @@ for i in range(nr_of_agents):
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
 experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
 
-experiments['joint_plan'] = experiment
+joint_plan = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
+experiments['joint_plan'] = joint_plan
 
 #### Experiment 3: 2 agents with individual-plans
 #################################################
@@ -121,7 +123,8 @@ for i in range(nr_of_agents):
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
 experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
 
-experiments['individual_plan'] = experiment
+individual_plan = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
+experiments['individual_plan'] = individual_plan
 
 #### Experiment 4: 2 agents with joint-plan and flag-heuristic
 ##############################################################
@@ -143,7 +146,8 @@ for i in range(nr_of_agents):
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
 experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
 
-experiments['joint_plan_flags'] = experiment
+joint_plan_flags = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
+experiments['joint_plan_flags'] = joint_plan_flags
 
 #### Experiment 5: 2 agents with individual-plans and flag-heuristic
 ####################################################################
@@ -154,7 +158,7 @@ begins = [[7,4], [7,14]]
 
 for i in range(nr_of_agents):
     strips_plan = strips_plans_individual[i]
-    shaper = CombinedShaper(strips_plan=strips_plan, convert=state_to_strips, num_flags=num_flags, 
+    shaper = CombinedShaper(strips_plan=strips_plan, convert=state_to_strips, num_flags=num_flags,
                             omega=600./(float (len(strips_plan) + num_flags)))
     e_greedy = EGreedy(epsilon=0.1)
     no_features = Feature(state_length= state_length)
@@ -165,7 +169,8 @@ for i in range(nr_of_agents):
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
 experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
 
-experiments['individual_plan_flags'] = experiment
+individual_plan_flags = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
+experiments['individual_plan_flags'] = individual_plan_flags
 
 #### Experiment 6: 2 agents with flag-heuristic
 ###############################################
@@ -185,7 +190,8 @@ for i in range(nr_of_agents):
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins, goal=[1,1])
 experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
 
-experiments['flag_based'] = experiment
+flag_based = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
+experiments['flag_based'] = flag_based
 
 #### Run Experiment
 ###################
@@ -198,7 +204,7 @@ if __name__ == "__main__":
             writer.follow(episode_ended)
             writer.activate()
             print "Executing experiment: " + experiment_name
-            experiment = experiments[experiment_name]
+            experiment = experiments[experiment_name]['experiment']
             experiment.run()
             if not os.path.exists(experiment_name): #Make directory with experiment_name if necessary
                 os.makedirs(experiment_name)
