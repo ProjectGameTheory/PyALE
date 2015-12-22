@@ -27,6 +27,10 @@ class RoomWorld(MultiEnvironment):
         self.directions = np.array([[1, 0], [0, 1], [-1, 0], [0, -1]])
         self.flag_setup()
 
+    def reset(self):
+        self.current_states = dict(self.begins)
+        self.flag_setup()
+
     def flag_setup(self):
         # Flags to collect
         self.flags_taken = dict()

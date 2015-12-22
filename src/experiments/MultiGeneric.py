@@ -7,7 +7,12 @@ class MultiGeneric(Experiment):
         self.learners = learners
         self.environment = environment
 
-    def run_episode(self):
+    def reset(self):
+        self.environment.reset()
+        for l in self.learners:
+            l.reset()
+
+    def run_episode(self,trial, episode):
         self.environment.start_setup()
         actions = {}
         terminals = {}
@@ -26,6 +31,6 @@ class MultiGeneric(Experiment):
                 if not terminals[id]:
                     actions[id] = learner.step(reward, state)
                 else:
-                    learner.end(reward)
+                    learner.end(trial, episode, reward)
             step += 1
             learners = [l for l in self.learners if not terminals[l.id]]

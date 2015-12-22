@@ -26,10 +26,10 @@ class Learner(object):
         self.num_steps += 1
         self.tot_reward += reward
 
-    def end(self, reward):
+    def end(self, trial, episode, reward):
         self.num_steps += 1
         self.tot_reward += reward
-        episode_ended.notify(self.id, self.num_steps, self.tot_reward)
+        episode_ended.notify(trial, episode, self.id, self.num_steps, self.tot_reward)
 
     def save_phi_action(self, phi, action):
         self.phi = phi

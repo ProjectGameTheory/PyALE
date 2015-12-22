@@ -13,4 +13,4 @@ class Event(object):
         for follower in self.followers:
             follower.handle(self)
 
-episode_ended = Event('episode', arguments=['id', 'steps', 'reward'])
+episode_ended = Event('episode', arguments=['trial', 'episode', 'id', 'steps', 'reward'])

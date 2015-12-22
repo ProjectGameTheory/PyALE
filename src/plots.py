@@ -3,6 +3,7 @@ import matplotlib.pyplot as pl
 from strips import experiments
 import pandas
 import os
+from scipy.stats import sem
 
 
 pl.figure()
@@ -16,7 +17,12 @@ for experiment_name, experiment_properties in experiments.iteritems():
     a = df.index.values
     idx = np.array([a] * experiment_properties['nr_of_agents']).T.flatten()[:len(a)]
     df = df.groupby(idx).mean()
-    pandas.rolling_mean(df['reward'], 50).plot(label=experiment_name)
+    trial_means = pandas.rolling_mean(df.groupby('episode').reward.mean().values, 1)
+    trial_sems = pandas.rolling_mean(df.groupby('episode').reward.apply(sem).mul(1.96).values, 1)
+    episodes = df.groupby('episode').reward.mean().keys()
+    pl.fill_between(episodes, trial_means - trial_sems,
+                 trial_means + trial_sems, color="#3F5D7D")
+    pl.plot(episodes, trial_means, color="white", lw=2)
 
 pl.xlabel('Episode')
 pl.ylabel('Discounted total reward per episode')
@@ -44,7 +50,12 @@ for experiment_name, experiment_properties in experiments.iteritems():
     a = df.index.values
     idx = np.array([a] * experiment_properties['nr_of_agents']).T.flatten()[:len(a)]
     df = df.groupby(idx).mean()
-    pandas.rolling_mean(df['steps'], 50).plot(label=experiment_name)
+    trial_means = pandas.rolling_mean(df.groupby('episode').steps.mean().values, 1)
+    trial_sems = pandas.rolling_mean(df.groupby('episode').steps.apply(sem).mul(1.96).values, 1)
+    episodes = df.groupby('episode').steps.mean().keys()
+    pl.fill_between(episodes, trial_means - trial_sems,
+                 trial_means + trial_sems, color="#3F5D7D")
+    pl.plot(episodes, trial_means, color="white", lw=2)
 
 pl.xlabel('Episode')
 pl.ylabel('Discounted steps per episode')

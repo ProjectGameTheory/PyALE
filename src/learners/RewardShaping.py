@@ -9,6 +9,9 @@ class RewardShaping(Learner):
         self.learner = learner
         self.shaper = shaper
 
+    def reset(self):
+        self.learner.reset()
+
     def shaping_reward(self, state, state_ns):
         potential_s = self.shaper.potential(state)
         potential_ns = self.shaper.potential(state_ns)
@@ -23,10 +26,10 @@ class RewardShaping(Learner):
         phi_ns = self.learner.features.phi(state)
         s = self.shaping_reward(self.learner.phi, phi_ns)
         reward += s
-        super(RewardShaping, self).step(reward, state) 
+        super(RewardShaping, self).step(reward, state)
         return self.learner.step(reward, state)
 
-    def end(self, reward):
-        super(RewardShaping, self).end(reward)
-        self.learner.end(reward)
+    def end(self, trial, episode, reward):
+        super(RewardShaping, self).end(trial, episode, reward)
+        self.learner.end(trial, episode, reward)
         #episode_ended.notify(self.num_steps, self.tot_reward)

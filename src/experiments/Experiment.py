@@ -14,12 +14,16 @@ class Experiment(object):
     def run_episode(self):
         pass
 
+    def reset(self):
+        pass
+
     def run_trial(self):
         for i in range(self.episodes):
             self.current_episode = i
-            self.run_episode()
+            self.run_episode(self.current_trial, i)
 
     def run(self):
         for i in range(self.trials):
             self.current_trial = i
             self.run_trial()
+            self.reset()

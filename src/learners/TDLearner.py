@@ -22,6 +22,10 @@ class TDLearner(Learner):
         # used for normalization
         self.base_reward = None
 
+    def reset(self):
+        self.theta = np.zeros(
+            (self.features.num_features(), self.num_actions()))
+
     def get_value(self, phi, action):
         action_idx = self.idx_action(action)
         return np.dot(phi, self.theta[:, action_idx])
@@ -54,7 +58,7 @@ class TDLearner(Learner):
 
     '''
     Reward normalization. Stores first nonzero reward and divides all future
-    rewards by its abolute value.  
+    rewards by its abolute value.
     '''
 
     def normalize_reward(self, reward):
@@ -104,8 +108,8 @@ class TDLearner(Learner):
         # action was updated
         return self.action
 
-    def end(self, reward):
-        super(TDLearner, self).end(reward)
+    def end(self, trial, episode, reward):
+        super(TDLearner, self).end(trial, episode, reward)
         alpha = self.get_alpha()
         reward = self.get_reward(reward)
 
