@@ -50,9 +50,9 @@ class TDLearner(Learner):
     def max_actions_idx(self, values_ns):
         return np.arange(values_ns.size)[values_ns == np.max(values_ns)]
 
-    def select_action(self, phi, step):
+    def select_action(self, phi, time):
         values = self.get_all_values(phi)
-        action = self.policy.select_action(actions=self.actions, values=values, step=step)
+        action = self.policy.select_action(actions=self.actions, values=values, time=time)
         return action, values
 
     '''
@@ -94,8 +94,8 @@ class TDLearner(Learner):
         self.save_phi_action(phi_ns, action_ns)
         return action_ns
 
-    def step(self, reward, state, step):
-        super(TDLearner, self).step(reward, state, step)
+    def step(self, reward, state, time):
+        super(TDLearner, self).step(reward, state, time)
         alpha = self.get_alpha()
         reward = self.get_reward(reward)
         # features from state
@@ -103,7 +103,7 @@ class TDLearner(Learner):
 
         self.trace.update(self.phi, self.action, self.gamma)
         # td update
-        self.theta += self.update_theta(alpha, reward, phi_ns, step)
+        self.theta += self.update_theta(alpha, reward, phi_ns, time)
         # action was updated
         return self.action
 

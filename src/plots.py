@@ -22,7 +22,7 @@ for experiment_name, experiment_properties in experiments.iteritems():
     episodes = df.groupby('episode').reward.mean().keys()
     pl.fill_between(episodes, trial_means - trial_sems,
                  trial_means + trial_sems, color="#3F5D7D")
-    pl.plot(episodes, trial_means, color="white", lw=2)
+    pl.plot(episodes, trial_means, color="black", lw=1)
 
 pl.xlabel('Episode')
 pl.ylabel('Discounted total reward per episode')
