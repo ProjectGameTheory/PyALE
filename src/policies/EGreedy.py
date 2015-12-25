@@ -5,7 +5,7 @@ class EGreedy(Policy):
     def __init__(self, epsilon=0.0):
         self.epsilon = epsilon
 
-    def select_action(self, actions=[], values=[]):
+    def select_action(self, actions=[], values=[],**kwargs):
         acts = np.arange(values.size)
         if (np.random.rand()< self.epsilon):
             action_idx = np.random.choice(acts)

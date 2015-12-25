@@ -41,8 +41,7 @@ class TDLearner(Learner):
         return len(self.actions)
 
     def dim_action(self):
-        assert len(
-            self.actions) > 0, 'Must be able to execute at least one action'
+        assert len(self.actions) > 0, 'Must be able to execute at least one action'
         return self.actions[0].size
 
     def idx_action(self, action):
@@ -51,9 +50,9 @@ class TDLearner(Learner):
     def max_actions_idx(self, values_ns):
         return np.arange(values_ns.size)[values_ns == np.max(values_ns)]
 
-    def select_action(self, phi):
+    def select_action(self, phi, step):
         values = self.get_all_values(phi)
-        action = self.policy.select_action(actions=self.actions, values=values)
+        action = self.policy.select_action(actions=self.actions, values=values, step=step)
         return action, values
 
     '''
@@ -90,13 +89,13 @@ class TDLearner(Learner):
         super(TDLearner, self).start(state)
         self.trace.reset()
         phi_ns = self.features.phi(state)
-        action_ns, values_ns = self.select_action(phi_ns)
+        action_ns, values_ns = self.select_action(phi_ns,0)
         # update state and action
         self.save_phi_action(phi_ns, action_ns)
         return action_ns
 
-    def step(self, reward, state):
-        super(TDLearner, self).step(reward, state)
+    def step(self, reward, state, step):
+        super(TDLearner, self).step(reward, state, step)
         alpha = self.get_alpha()
         reward = self.get_reward(reward)
         # features from state
@@ -104,7 +103,7 @@ class TDLearner(Learner):
 
         self.trace.update(self.phi, self.action, self.gamma)
         # td update
-        self.theta += self.update_theta(alpha, reward, phi_ns)
+        self.theta += self.update_theta(alpha, reward, phi_ns, step)
         # action was updated
         return self.action
 

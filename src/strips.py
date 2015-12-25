@@ -4,6 +4,7 @@ from shaping.STRIPS import STRIPS
 from shaping.FlagShaper import FlagShaper
 from shaping.CombinedShaper import CombinedShaper
 from policies.EGreedy import EGreedy
+from policies.TimeEGreedy import TimeEGreedy
 from traces.Eligibility import Eligibility
 from features.Feature import Feature
 from environments.GridWorld import GridWorld
@@ -62,6 +63,8 @@ actions = [0, 1, 2, 3]
 state_length = grid_size[0]*grid_size[1]*(2**num_flags)
 
 experiments = {}
+
+TimeEGreedy_formula = lambda t:1./np.sqrt(t)
 
 #### Experiment 1: 2 agents with no plan or heuristic
 #####################################################
@@ -192,6 +195,136 @@ experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=lear
 
 flag_based = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
 experiments['flag_based'] = flag_based
+
+#### Experiment 7: 2 agents with no plan or heuristic with Time E-Greedy
+#####################################################
+
+nr_of_agents = 2
+learners = []
+begins = [[7,4], [7,14]]
+
+for i in range(nr_of_agents):
+    e_greedy = TimeEGreedy(formula=TimeEGreedy_formula)
+    no_features = Feature(state_length=state_length)
+    trace = Eligibility(lambda_=0.4, actions=actions, shape=(no_features.num_features(), len(actions)))
+    learners.append(Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=e_greedy, features=no_features, trace=trace))
+
+environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins, goal=[1,1])
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+
+no_plan_time_egreedy = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 1}
+experiments['no_plan_time_egreedy'] = no_plan_time_egreedy
+
+#### Experiment 8: 2 agents with joint-plan with Time E-Greedy
+###########################################
+
+nr_of_agents = 2
+learners = []
+begins = [[7,4], [7,14]]
+
+for i in range(nr_of_agents):
+    strips_plan = strips_plans_joint[i]
+    shaper = STRIPS(strips_plan=strips_plan, convert=state_to_strips, omega=600./len(strips_plan))
+    e_greedy = TimeEGreedy(formula=TimeEGreedy_formula)
+    no_features = Feature(state_length=state_length)
+    trace = Eligibility(lambda_=0.4, actions=actions, shape=(no_features.num_features(), len(actions)))
+    sarsa = Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=e_greedy, features=no_features, trace=trace)
+    learners.append(RewardShaping(learner=sarsa, shaper=shaper))
+
+environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+
+joint_plan_time_egreedy = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
+experiments['joint_plan_time_egreedy'] = joint_plan_time_egreedy
+
+#### Experiment 9: 2 agents with individual-plans with Time E-Greedy
+#################################################
+
+nr_of_agents = 2
+learners = []
+begins = [[7,4], [7,14]]
+
+for i in range(nr_of_agents):
+    strips_plan = strips_plans_individual[i]
+    shaper = STRIPS(strips_plan=strips_plan, convert=state_to_strips, omega=600./len(strips_plan))
+    e_greedy = TimeEGreedy(formula=TimeEGreedy_formula)
+    no_features = Feature(state_length= state_length)
+    trace = Eligibility(lambda_=0.4, actions=actions, shape=(no_features.num_features(), len(actions)))
+    sarsa = Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=e_greedy, features=no_features, trace=trace)
+    learners.append(RewardShaping(learner=sarsa, shaper=shaper))
+
+environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+
+individual_plan_time_egreedy = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
+experiments['individual_plan_time_egreedy'] = individual_plan_time_egreedy
+
+#### Experiment 10: 2 agents with joint-plan and flag-heuristic with Time E-Greedy
+##############################################################
+
+nr_of_agents = 2
+learners = []
+begins = [[7,4], [7,14]]
+
+for i in range(nr_of_agents):
+    strips_plan = strips_plans_joint[i]
+    shaper = CombinedShaper(strips_plan=strips_plan, convert=state_to_strips, num_flags=num_flags,
+                            omega=600./(float (len(strips_plan) + num_flags)))
+    e_greedy = TimeEGreedy(formula=TimeEGreedy_formula)
+    no_features = Feature(state_length= state_length)
+    trace = Eligibility(lambda_=0.4, actions=actions, shape=(no_features.num_features(), len(actions)))
+    sarsa = Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=e_greedy, features=no_features, trace=trace)
+    learners.append(RewardShaping(learner=sarsa, shaper=shaper))
+
+environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+
+joint_plan_flags_time_egreedy = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
+experiments['joint_plan_flags_time_egreedy'] = joint_plan_flags_time_egreedy
+
+#### Experiment 11: 2 agents with individual-plans and flag-heuristic with Time E-Greedy
+####################################################################
+
+nr_of_agents = 2
+learners = []
+begins = [[7,4], [7,14]]
+
+for i in range(nr_of_agents):
+    strips_plan = strips_plans_individual[i]
+    shaper = CombinedShaper(strips_plan=strips_plan, convert=state_to_strips, num_flags=num_flags,
+                            omega=600./(float (len(strips_plan) + num_flags)))
+    e_greedy = TimeEGreedy(formula=TimeEGreedy_formula)
+    no_features = Feature(state_length= state_length)
+    trace = Eligibility(lambda_=0.4, actions=actions, shape=(no_features.num_features(), len(actions)))
+    sarsa = Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=e_greedy, features=no_features, trace=trace)
+    learners.append(RewardShaping(learner=sarsa, shaper=shaper))
+
+environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+
+individual_plan_flags_time_egreedy = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
+experiments['individual_plan_flags_time_egreedy'] = individual_plan_flags_time_egreedy
+
+#### Experiment 12: 2 agents with flag-heuristic with Time E-Greedy
+###############################################
+
+nr_of_agents = 2
+learners = []
+begins = [[7,4], [7,14]]
+
+for i in range(nr_of_agents):
+    shaper = FlagShaper(num_flags=num_flags)
+    e_greedy = TimeEGreedy(formula=TimeEGreedy_formula)
+    no_features = Feature(state_length= state_length)
+    trace = Eligibility(lambda_=0.4, actions=actions, shape=(no_features.num_features(), len(actions)))
+    sarsa = Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=e_greedy, features=no_features, trace=trace)
+    learners.append(RewardShaping(learner=sarsa, shaper=shaper))
+
+environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins, goal=[1,1])
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+
+flag_based_time_egreedy = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
+experiments['flag_based_time_egreedy'] = flag_based_time_egreedy
 
 #### Run Experiment
 ###################

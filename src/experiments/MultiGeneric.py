@@ -29,7 +29,7 @@ class MultiGeneric(Experiment):
                 id = learner.id
                 state, reward, terminals[id] = self.environment.step(id, actions[id])
                 if not terminals[id]:
-                    actions[id] = learner.step(reward, state)
+                    actions[id] = learner.step(reward, state, episode)
                 else:
                     learner.end(trial, episode, reward)
             step += 1

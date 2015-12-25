@@ -22,12 +22,12 @@ class RewardShaping(Learner):
         self.shaper.start()
         return self.learner.start(state)
 
-    def step(self, reward, state):
+    def step(self, reward, state, step):
         phi_ns = self.learner.features.phi(state)
         s = self.shaping_reward(self.learner.phi, phi_ns)
         reward += s
-        super(RewardShaping, self).step(reward, state)
-        return self.learner.step(reward, state)
+        super(RewardShaping, self).step(reward, state, step)
+        return self.learner.step(reward, state, step)
 
     def end(self, trial, episode, reward):
         super(RewardShaping, self).end(trial, episode, reward)

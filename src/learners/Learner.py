@@ -22,7 +22,7 @@ class Learner(object):
         self.num_steps = 0
         self.tot_reward = 0
 
-    def step(self, reward, state):
+    def step(self, reward, state, step):
         self.num_steps += 1
         self.tot_reward += reward
 
