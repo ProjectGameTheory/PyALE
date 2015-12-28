@@ -34,3 +34,7 @@ class MultiGeneric(Experiment):
                     learner.end(trial, episode, reward)
             step += 1
             learners = [l for l in self.learners if not terminals[l.id]]
+        # not all episodes terminal, but over step_limit
+        if len(learners):
+            for learner in learners:
+                learner.end(trial, episode, reward)
