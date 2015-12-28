@@ -11,19 +11,22 @@ ax = pl.subplot(111)
 for experiment_name, experiment_properties in experiments.iteritems():
     if not os.path.isdir(experiment_name):
         continue
+    print experiment_name
     df = pandas.read_csv(experiment_name + '/episode.csv', index_col=0)[::experiment_properties['learners_per_agent']]
     df.set_index([range(1,len(df)+1)], inplace=True)
 
     a = df.index.values
     idx = np.array([a] * experiment_properties['nr_of_agents']).T.flatten()[:len(a)]
     df = df.groupby(idx).mean()
-    trial_means = pandas.rolling_mean(df.groupby('episode').reward.mean().values, 1)
-    trial_sems = pandas.rolling_mean(df.groupby('episode').reward.apply(sem).mul(1.96).values, 1)
+    trial_means = pandas.rolling_mean(df.groupby('episode').reward.mean().values, 5)
+    #trial_medians = pandas.rolling_mean(df.groupby('episode').reward.median().values, 5)
+    trial_sems = pandas.rolling_mean(df.groupby('episode').reward.apply(sem).mul(1.96).values, 5)
     episodes = df.groupby('episode').reward.mean().keys()
-    pl.fill_between(episodes, trial_means - trial_sems,
-                 trial_means + trial_sems, color="#3F5D7D")
-    pl.plot(episodes, trial_means, color="black", lw=1)
+    # pl.fill_between(episodes, trial_means - trial_sems,
+    #              trial_means + trial_sems, color="#3F5D7D")
+    pl.plot(episodes, trial_means, lw=1,label=experiment_name)
 
+#pl.ylim(-2000,1000)
 pl.xlabel('Episode')
 pl.ylabel('Discounted total reward per episode')
 
@@ -38,25 +41,27 @@ ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05),
 pl.show()
 
 
-
 pl.figure()
 ax = pl.subplot(111)
 for experiment_name, experiment_properties in experiments.iteritems():
     if not os.path.isdir(experiment_name):
         continue
+    print experiment_name
     df = pandas.read_csv(experiment_name + '/episode.csv', index_col=0)[::experiment_properties['learners_per_agent']]
     df.set_index([range(1,len(df)+1)], inplace=True)
 
     a = df.index.values
     idx = np.array([a] * experiment_properties['nr_of_agents']).T.flatten()[:len(a)]
     df = df.groupby(idx).mean()
-    trial_means = pandas.rolling_mean(df.groupby('episode').steps.mean().values, 1)
-    trial_sems = pandas.rolling_mean(df.groupby('episode').steps.apply(sem).mul(1.96).values, 1)
+    trial_means = pandas.rolling_mean(df.groupby('episode').steps.mean().values, 5)
+    #trial_medians = pandas.rolling_mean(df.groupby('episode').steps.median().values, 5)
+    trial_sems = pandas.rolling_mean(df.groupby('episode').steps.apply(sem).mul(1.96).values, 5)
     episodes = df.groupby('episode').steps.mean().keys()
-    pl.fill_between(episodes, trial_means - trial_sems,
-                 trial_means + trial_sems, color="#3F5D7D")
-    pl.plot(episodes, trial_means, color="white", lw=2)
+    # pl.fill_between(episodes, trial_means - trial_sems,
+    #              trial_means + trial_sems, color="#3F5D7D")
+    pl.plot(episodes, trial_means, lw=1,label=experiment_name)
 
+#pl.ylim(-100,200)
 pl.xlabel('Episode')
 pl.ylabel('Discounted steps per episode')
 
