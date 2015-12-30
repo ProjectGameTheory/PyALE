@@ -68,7 +68,7 @@ class RoomWorld(MultiEnvironment):
             return position
         elif direction == 1 and (new_position[1] >= self.size[1] or self.vertical_wall(new_position)):
             return position
-        elif direction == 3 and (new_position[1] < 0 or self.vertical_wall(new_position)):
+        elif direction == 3 and (new_position[1] < 0 or self.vertical_wall(position)):
             return position
         else:
             return new_position

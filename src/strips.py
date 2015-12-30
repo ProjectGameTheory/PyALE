@@ -83,7 +83,7 @@ for i in range(nr_of_agents):
     learners.append(Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=e_greedy, features=no_features, trace=trace))
 
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins, goal=[1,1])
-experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=30, learners=learners, environment=environment)
 
 no_plan = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 1}
 experiments['no_plan'] = no_plan
@@ -105,7 +105,7 @@ for i in range(nr_of_agents):
     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
 
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
-experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=30, learners=learners, environment=environment)
 
 joint_plan = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
 experiments['joint_plan'] = joint_plan
@@ -127,7 +127,7 @@ for i in range(nr_of_agents):
     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
 
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
-experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=30, learners=learners, environment=environment)
 
 individual_plan = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
 experiments['individual_plan'] = individual_plan
@@ -151,6 +151,7 @@ for i in range(nr_of_agents):
 
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
 experiment = MultiGeneric(max_steps=50000, episodes=1000, trials=30, learners=learners, environment=environment)
+
 
 joint_plan_flags = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
 experiments['joint_plan_flags'] = joint_plan_flags
@@ -213,7 +214,7 @@ for i in range(nr_of_agents):
     learners.append(Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=e_greedy, features=no_features, trace=trace))
 
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins, goal=[1,1])
-experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=30, learners=learners, environment=environment)
 
 no_plan_time_egreedy = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 1}
 experiments['no_plan_time_egreedy'] = no_plan_time_egreedy
@@ -235,7 +236,7 @@ for i in range(nr_of_agents):
     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
 
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
-experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=30, learners=learners, environment=environment)
 
 joint_plan_time_egreedy = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
 experiments['joint_plan_time_egreedy'] = joint_plan_time_egreedy
@@ -257,7 +258,7 @@ for i in range(nr_of_agents):
     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
 
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
-experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=30, learners=learners, environment=environment)
 
 individual_plan_time_egreedy = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
 experiments['individual_plan_time_egreedy'] = individual_plan_time_egreedy
@@ -280,7 +281,7 @@ for i in range(nr_of_agents):
     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
 
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
-experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=30, learners=learners, environment=environment)
 
 joint_plan_flags_time_egreedy = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
 experiments['joint_plan_flags_time_egreedy'] = joint_plan_flags_time_egreedy
@@ -303,7 +304,7 @@ for i in range(nr_of_agents):
     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
 
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
-experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=30, learners=learners, environment=environment)
 
 individual_plan_flags_time_egreedy = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
 experiments['individual_plan_flags_time_egreedy'] = individual_plan_flags_time_egreedy
@@ -324,7 +325,7 @@ for i in range(nr_of_agents):
     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
 
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins, goal=[1,1])
-experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=30, learners=learners, environment=environment)
 
 flag_based_time_egreedy = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
 experiments['flag_based_time_egreedy'] = flag_based_time_egreedy
@@ -344,7 +345,7 @@ for i in range(nr_of_agents):
     learners.append(Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=softmax, features=no_features, trace=trace))
 
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins, goal=[1,1])
-experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=30, learners=learners, environment=environment)
 
 no_plan_softmax = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 1}
 experiments['no_plan_softmax'] = no_plan_softmax
@@ -366,7 +367,7 @@ for i in range(nr_of_agents):
     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
 
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
-experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=30, learners=learners, environment=environment)
 
 joint_plan_softmax = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
 experiments['joint_plan_softmax'] = joint_plan_softmax
@@ -388,7 +389,7 @@ for i in range(nr_of_agents):
     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
 
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
-experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=30, learners=learners, environment=environment)
 
 individual_plan_softmax = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
 experiments['individual_plan_softmax'] = individual_plan_softmax
@@ -411,7 +412,7 @@ for i in range(nr_of_agents):
     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
 
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
-experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=30, learners=learners, environment=environment)
 
 joint_plan_flags_softmax = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
 experiments['joint_plan_flags_softmax'] = joint_plan_flags_softmax
@@ -434,7 +435,7 @@ for i in range(nr_of_agents):
     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
 
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
-experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=30, learners=learners, environment=environment)
 
 individual_plan_flags_softmax = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
 experiments['individual_plan_flags_softmax'] = individual_plan_flags_softmax
@@ -455,7 +456,7 @@ for i in range(nr_of_agents):
     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
 
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins, goal=[1,1])
-experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=30, learners=learners, environment=environment)
 
 flag_based_softmax = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
 experiments['flag_based_softmax'] = flag_based_softmax
@@ -474,7 +475,7 @@ for i in range(nr_of_agents):
     learners.append(Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=softmax, features=no_features, trace=trace))
 
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins, goal=[1,1])
-experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=30, learners=learners, environment=environment)
 
 no_plan_time_softmax = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 1}
 experiments['no_plan_time_softmax'] = no_plan_time_softmax
@@ -496,7 +497,7 @@ for i in range(nr_of_agents):
     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
 
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
-experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=30, learners=learners, environment=environment)
 
 joint_plan_time_softmax = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
 experiments['joint_plan_time_softmax'] = joint_plan_time_softmax
@@ -518,7 +519,7 @@ for i in range(nr_of_agents):
     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
 
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
-experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=30, learners=learners, environment=environment)
 
 individual_plan_time_softmax = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
 experiments['individual_plan_time_softmax'] = individual_plan_time_softmax
@@ -541,7 +542,7 @@ for i in range(nr_of_agents):
     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
 
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
-experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=30, learners=learners, environment=environment)
 
 joint_plan_flags_time_softmax = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
 experiments['joint_plan_flags_time_softmax'] = joint_plan_flags_time_softmax
@@ -564,7 +565,7 @@ for i in range(nr_of_agents):
     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
 
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins,goal=[1,1])
-experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=30, learners=learners, environment=environment)
 
 individual_plan_flags_time_softmax = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
 experiments['individual_plan_flags_time_softmax'] = individual_plan_flags_time_softmax
@@ -585,7 +586,7 @@ for i in range(nr_of_agents):
     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
 
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins, goal=[1,1])
-experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=30, learners=learners, environment=environment)
 
 flag_based_time_softmax = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
 experiments['flag_based_time_softmax'] = flag_based_time_softmax
