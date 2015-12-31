@@ -83,7 +83,7 @@ for i in range(nr_of_agents):
     learners.append(Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=e_greedy, features=no_features, trace=trace))
 
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins, goal=[1,1])
-experiment = MultiGeneric(max_steps=None, episodes=1000, trials=30, learners=learners, environment=environment)
+experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
 
 no_plan = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 1}
 experiments['no_plan'] = no_plan
