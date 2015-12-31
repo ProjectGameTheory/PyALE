@@ -338,7 +338,7 @@ learners = []
 begins = [[7,4], [7,14]]
 
 for i in range(nr_of_agents):
-    softmax = Softmax(temperature=0.1)
+    softmax = Softmax(temperature=1.0)
     no_features = Feature(state_length=state_length)
     trace = Eligibility(lambda_=0.4, actions=actions, shape=(no_features.num_features(), len(actions)))
     learners.append(Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=softmax, features=no_features, trace=trace))
@@ -359,7 +359,7 @@ begins = [[7,4], [7,14]]
 for i in range(nr_of_agents):
     strips_plan = strips_plans_joint[i]
     shaper = STRIPS(strips_plan=strips_plan, convert=state_to_strips, omega=600./len(strips_plan))
-    softmax = Softmax(temperature=0.1)
+    softmax = Softmax(temperature=1.0)
     no_features = Feature(state_length=state_length)
     trace = Eligibility(lambda_=0.4, actions=actions, shape=(no_features.num_features(), len(actions)))
     sarsa = Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=softmax, features=no_features, trace=trace)
@@ -381,7 +381,7 @@ begins = [[7,4], [7,14]]
 for i in range(nr_of_agents):
     strips_plan = strips_plans_individual[i]
     shaper = STRIPS(strips_plan=strips_plan, convert=state_to_strips, omega=600./len(strips_plan))
-    softmax = Softmax(temperature=0.1)
+    softmax = Softmax(temperature=1.0)
     no_features = Feature(state_length= state_length)
     trace = Eligibility(lambda_=0.4, actions=actions, shape=(no_features.num_features(), len(actions)))
     sarsa = Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=softmax, features=no_features, trace=trace)
@@ -404,7 +404,7 @@ for i in range(nr_of_agents):
     strips_plan = strips_plans_joint[i]
     shaper = CombinedShaper(strips_plan=strips_plan, convert=state_to_strips, num_flags=num_flags,
                             omega=600./(float (len(strips_plan) + num_flags)))
-    softmax = Softmax(temperature=0.1)
+    softmax = Softmax(temperature=1.0)
     no_features = Feature(state_length= state_length)
     trace = Eligibility(lambda_=0.4, actions=actions, shape=(no_features.num_features(), len(actions)))
     sarsa = Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=softmax, features=no_features, trace=trace)
@@ -427,7 +427,7 @@ for i in range(nr_of_agents):
     strips_plan = strips_plans_individual[i]
     shaper = CombinedShaper(strips_plan=strips_plan, convert=state_to_strips, num_flags=num_flags,
                             omega=600./(float (len(strips_plan) + num_flags)))
-    softmax = Softmax(temperature=0.1)
+    softmax = Softmax(temperature=1.0)
     no_features = Feature(state_length= state_length)
     trace = Eligibility(lambda_=0.4, actions=actions, shape=(no_features.num_features(), len(actions)))
     sarsa = Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=softmax, features=no_features, trace=trace)
@@ -448,7 +448,7 @@ begins = [[7,4], [7,14]]
 
 for i in range(nr_of_agents):
     shaper = FlagShaper(num_flags=num_flags)
-    softmax = Softmax(temperature=0.1)
+    softmax = Softmax(temperature=1.0)
     no_features = Feature(state_length= state_length)
     trace = Eligibility(lambda_=0.4, actions=actions, shape=(no_features.num_features(), len(actions)))
     sarsa = Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=softmax, features=no_features, trace=trace)
