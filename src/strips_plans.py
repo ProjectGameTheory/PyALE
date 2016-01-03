@@ -75,7 +75,7 @@ set(['in_roomC', 'taken_flagA', 'taken_flagB', 'taken_flagC']),
 set(['in_hallB', 'taken_flagA', 'taken_flagB', 'taken_flagC']),
 set(['in_hallA', 'taken_flagA', 'taken_flagB', 'taken_flagC']),
 set(['in_roomD', 'taken_flagA', 'taken_flagB', 'taken_flagC']),
-set(['in_roomD', 'taken_flagA', 'taken_flagB', 'taken_flagC', 'taken_flagD'])]
+set(['in_roomD', 'taken_flagA', 'taken_flagB', 'taken_flagC', 'taken_flagD'])],
 #Agent 2 (F,E,C,D)
 [set(['in_roomE']),
 set(['in_roomE', 'taken_flagF']),
@@ -106,7 +106,7 @@ set(['in_roomB', 'taken_flagA', 'taken_flagC', 'taken_flagE', 'taken_flagB']),
 set(['in_hallB', 'taken_flagA', 'taken_flagC', 'taken_flagE', 'taken_flagB']),
 set(['in_hallA', 'taken_flagA', 'taken_flagC', 'taken_flagE', 'taken_flagB']),
 set(['in_roomD', 'taken_flagA', 'taken_flagC', 'taken_flagE', 'taken_flagB']),
-set(['in_roomD', 'taken_flagA', 'taken_flagC', 'taken_flagE', 'taken_flagB', 'taken_flagD'])]
+set(['in_roomD', 'taken_flagA', 'taken_flagC', 'taken_flagE', 'taken_flagB', 'taken_flagD'])],
 #Agent 2 (F, E, C, B, D)
 [set(['in_roomE']),
 set(['in_roomE', 'taken_flagF']),

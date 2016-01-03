@@ -598,7 +598,7 @@ learners = []
 begins = [[7,4], [7,14]]
 
 for i in range(nr_of_agents):
-    strips_plan = strips_plans_4[i]
+    strips_plan = strips_plan_4[i]
     shaper = STRIPS(strips_plan=strips_plan, convert=state_to_strips, omega=600./len(strips_plan))
     softmax = Softmax(temperature=1.0)
     no_features = Feature(state_length=state_length)
@@ -607,7 +607,7 @@ for i in range(nr_of_agents):
     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
 
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins, goal=[1,1])
-experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+experiment = MultiGeneric(max_steps=50000, episodes=1000, trials=1, learners=learners, environment=environment)
 
 plan_based_4 = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
 experiments['plan_based_4'] = plan_based_4
@@ -620,7 +620,7 @@ learners = []
 begins = [[7,4], [7,14]]
 
 for i in range(nr_of_agents):
-    strips_plan = strips_plans_5[i]
+    strips_plan = strips_plan_5[i]
     shaper = STRIPS(strips_plan=strips_plan, convert=state_to_strips, omega=600./len(strips_plan))
     softmax = Softmax(temperature=1.0)
     no_features = Feature(state_length=state_length)
