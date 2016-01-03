@@ -629,10 +629,32 @@ for i in range(nr_of_agents):
     learners.append(RewardShaping(learner=sarsa, shaper=shaper))
 
 environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins, goal=[1,1])
-experiment = MultiGeneric(max_steps=None, episodes=1000, trials=1, learners=learners, environment=environment)
+experiment = MultiGeneric(max_steps=50000, episodes=1000, trials=1, learners=learners, environment=environment)
 
 plan_based_5 = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
 experiments['plan_based_5'] = plan_based_5
+
+#### Experiment 27: 2 agents with plan-based-6 and Softmax
+##########################################################
+
+nr_of_agents = 2
+learners = []
+begins = [[7,4], [7,14]]
+
+for i in range(nr_of_agents):
+    strips_plan = strips_plan_6[i]
+    shaper = STRIPS(strips_plan=strips_plan, convert=state_to_strips, omega=600./len(strips_plan))
+    softmax = Softmax(temperature=1.0)
+    no_features = Feature(state_length=state_length)
+    trace = Eligibility(lambda_=0.4, actions=actions, shape=(no_features.num_features(), len(actions)))
+    sarsa = Sarsa(actions=actions, alpha=0.1, gamma=0.99, policy=softmax, features=no_features, trace=trace)
+    learners.append(RewardShaping(learner=sarsa, shaper=shaper))
+
+environment = RoomWorld(grid, population_size=nr_of_agents, ids=[l.id for l in learners], begins=begins, goal=[1,1])
+experiment = MultiGeneric(max_steps=50000, episodes=1000, trials=1, learners=learners, environment=environment)
+
+plan_based_6 = {'experiment': experiment, 'nr_of_agents': nr_of_agents, 'learners_per_agent': 2}
+experiments['plan_based_6'] = plan_based_6
 
 #### Run Experiment
 ###################
